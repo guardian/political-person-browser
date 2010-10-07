@@ -4,6 +4,11 @@ from google.appengine.api import memcache
 import logging
 import helpers
 
+class MP(db.Model):
+    aristotleid = db.IntegerProperty(required=True)
+    name = db.StringProperty(required=True)
+    constituency = db.StringProperty(required=True)
+
 class KeyValue(db.Model):
     k = db.StringProperty(required=True)
     v = db.StringProperty(required=True)

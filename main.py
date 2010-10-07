@@ -11,7 +11,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 # Local imports
 import settings
 import helpers
-import models
+from models import MP
 import logging
 
 class MainHandler(RequestHandler):
@@ -24,8 +24,12 @@ class LoadMPHandler(RequestHandler):
         id = self.request.get('id')
         api_url = self.request.get('api_url')
         json = helpers.load_from_json_endpoint(api_url)
+        key = "MP-%s" % (id)
+        name = json['person']['name']
+        constituency = json['person']['constituency']['name']
         #Do Something with the returned information
         logging.info('Got information on MP %s from %s' % (json['person']['name'], api_url))
+        mp = MP.get_or_insert(key, aristotleid=int(id), name=name, constituency=constituency)
 
 class LoadFeedHandler(RequestHandler):
     def get(self):
