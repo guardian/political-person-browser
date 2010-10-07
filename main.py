@@ -18,12 +18,21 @@ class MainHandler(RequestHandler):
     def get(self):
         helpers.render_template(self, 'index.html', {'mps':MP.all()})
 
+class MPHandler(RequestHandler):
+    def get(self, id=None):
+        key = '%s' % (id.strip())
+        logging.info('Request for MP %s', key)
+        mp = MP.all().filter('aristotleid =', long(id)).get()
+        if not mp:
+            self.error(404)
+        helpers.render_template(self, 'mp.html', {'mp':mp})
+
 class LoadMPHandler(RequestHandler):
     def post(self):
         id = self.request.get('id')
         api_url = self.request.get('api_url')
         json = helpers.load_from_json_endpoint(api_url)
-        key = "MP-%s" % (id)
+        key = "%s" % (id)
         name = json['person']['name']
         constituency = json['person']['constituency']['name']
         #Do Something with the returned information
@@ -41,6 +50,7 @@ class LoadFeedHandler(RequestHandler):
 def main():
     application = WSGIApplication([
         ('/', MainHandler),
+        ('/mp/(?P<id>\d+)', MPHandler),
         ('/feeds/import', LoadFeedHandler),
         ('/tasks/loadmp', LoadMPHandler),
     ],
