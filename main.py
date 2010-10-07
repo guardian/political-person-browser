@@ -16,8 +16,7 @@ import logging
 
 class MainHandler(RequestHandler):
     def get(self):
-        logging.info("Got request for /")
-        helpers.render_template(self, 'index.html', {})
+        helpers.render_template(self, 'index.html', {'mps':MP.all()})
 
 class LoadMPHandler(RequestHandler):
     def post(self):
