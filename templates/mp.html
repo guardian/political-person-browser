@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{mp.name}}{% endblock %}
+{% block body %}
+<h1>{{mp.name}}</h1>
+<p>MP of {{mp.constituency}}</p>
+<ul>
+{% for article in articles.response.results %}
+<li><a href="{{article.webUrl}}">{{article.webTitle}}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
+
