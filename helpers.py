@@ -1,6 +1,6 @@
 import os
 from google.appengine.ext.webapp import template
-from google.appengine.api import users
+from google.appengine.api import users, memcache
 from google.appengine.api.urlfetch import fetch
 from google.appengine.api.labs import taskqueue
 
@@ -10,6 +10,13 @@ try:
     import json
 except ImportError:
     from django.utils import json
+
+def cached(key, f, timeout=60, *args, **kwargs):
+    obj = memcache.get(key)
+    if not obj:
+        obj = f(*args, **kwargs)
+        memcache.set(key, obj, time=timeout)
+    return obj
 
 def load_from_json_endpoint(url):
     logging.info('Requesting "%s"' % (url))

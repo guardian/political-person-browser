@@ -26,7 +26,7 @@ class MPHandler(RequestHandler):
         mp = MP.all().filter('aristotleid =', long(id)).get()
         if not mp:
             self.error(404)
-        articles = helpers.load_from_json_endpoint('http://content.guardianapis.com/search.json?q=%s' % (quote(mp.name)))
+        articles = helpers.cached(key, lambda:helpers.load_from_json_endpoint('http://content.guardianapis.com/search.json?q=%s' % (quote(mp.name))), 60*60)
         helpers.render_template(self, 'mp.html', {'mp':mp, 'articles':articles})
 
 class LoadMPHandler(RequestHandler):
